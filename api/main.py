@@ -1,52 +1,59 @@
-from datetime import datetime
+import datetime
+import os
 
-import pandas as pd
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pymongo import MongoClient
 
-from api.db_connect import MariaDBConnection
+load_dotenv()
 
 app = FastAPI()
 
-
-class Item(BaseModel):
-    title: str
-    text: str
-    timestamp_published: datetime
+client = None
+db = None
+collection = None
 
 
-@app.get("/items/")
-def read_items(start_date: datetime, end_date: datetime):
-    # query = """
-    # SELECT title, text, ts_item_published
-    # FROM feed_text
-    # WHERE timestamp_published BETWEEN %s AND %s
-    # """
+@app.on_event("startup")
+def startup_db_client():
+    global client, db, collection
 
-    # with MariaDBConnection() as conn:
-    #     if not conn:
-    #         raise HTTPException(
-    #             status_code=500, detail="Datenbankverbindung fehlgeschlagen."
-    #         )
+    MONGO_USER = os.environ.get("DB_USER")
+    MONGO_PASSWORD = os.environ.get("DB_PASSWORD")
+    MONGO_HOST = os.environ.get("DB_HOST")
+    MONGO_PORT = os.environ.get("DB_PORT")
 
-    #     cursor = conn.cursor(dictionary=True)
-    #     cursor.execute(query, (start_date, end_date))
-    #     rows = cursor.fetchall()
+    connection_string = f"mongodb://{MONGO_USER}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}/?authSource=rss"
+    client = MongoClient(connection_string)
+    db = client["rss"]
+    collection = db["articles"]
 
-    #     if not rows:
-    #         raise HTTPException(
-    #             status_code=404,
-    #             detail="Keine Einträge für den angegebenen Zeitraum gefunden.",
-    #         )
 
-    #     items = [Item(**row) for row in rows]
-    csv_file_path = "feed_text_202408061018.csv"
-    df = pd.read_csv(csv_file_path)
-    df = df[["title", "text", "ts_item_published"]]
-    df["ts_item_published"] = pd.to_datetime(df["ts_item_published"])
+@app.on_event("shutdown")
+def shutdown_db_client():
+    if client:
+        client.close()
 
-    mask = (df["ts_item_published"] >= start_date) & (
-        df["ts_item_published"] <= end_date
-    )
-    filtered_df = df.loc[mask]
-    return filtered_df.to_json(orient="records")
+
+@app.get("/articles/")
+def get_articles(date: datetime.date):
+    """
+    Retrieve articles with 'ts_last_feed_updated' later than the provided date.
+
+    Query Parameter:
+    - date (YYYY-MM-DD): The starting date to filter articles.
+
+    Returns:
+    - A list of articles updated after the given date.
+    """
+    dt = datetime.datetime.combine(date, datetime.time.min)
+
+    try:
+        articles_cursor = collection.find({"ts_last_feed_updated": {"$gt": dt}})
+        articles = []
+        for article in articles_cursor:
+            article["_id"] = str(article["_id"])
+            articles.append(article)
+        return articles
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
