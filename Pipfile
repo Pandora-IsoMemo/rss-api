@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 fastapi = "==0.115.3"
 pytest = "==8.3.0"
-pymongo = "==4.11.2"
+pymongo = "==4.15.0"
 pandas = "*"
 
 [dev-packages]
