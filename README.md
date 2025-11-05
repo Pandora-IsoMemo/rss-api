@@ -1,19 +1,5 @@
 # RSS-API
 
-Start API locally via
-
-```
-uvicorn api.main:app --reload
-```
-
-The API runs currently on a csv file, access example:
-
-```
-http://127.0.0.1:8000/items/?start_date=2024-08-04T00:00:00&end_date=2024-08-05T23:59:59
-```
-
-The API returns title, text and ts_item_published for all articles within the specified time range. 
-
 ## Dependency Management
 
 This project uses [pipenv](https://pipenv.pypa.io/) for dependency management. To install or update dependencies:
@@ -33,17 +19,38 @@ This project uses [pipenv](https://pipenv.pypa.io/) for dependency management. T
 
 Make sure to activate your pipenv shell or use `pipenv run` for commands if not already inside the environment.
 
-## Versioning
+## Running the API Locally
 
-The project uses calender versioning (`YYYY.MM.PATCH`). The following statement updates the version and pushes the update directly to github.
-
-```
-bumpver update --patch
-```
-
-To see how the version would be updated, use the `--dry` flag:
+Start API locally via
 
 ```
-bumpver update --dry --patch
+pipenv run uvicorn api.main:app --reload
 ```
+
+Ensure you have a VPN connection to the server and opened a tunnel to the db.
+
+The API returns title, text and ts_item_published for all articles within the specified time range. 
+
+## Versioning with bumpver
+
+This project uses [bumpver](https://github.com/mbarkhau/bumpver) for version management, following calendar versioning (`YYYY.MM.PATCH`). Versioning is configured in `pyproject.toml`.
+
+- To bump the patch version (e.g., `2025.11.0` → `2025.11.1`):
+	```bash
+	bumpver update --patch
+	```
+- To bump the minor version (e.g., `2025.11.1` → `2025.12.1`):
+	```bash
+	bumpver update --minor
+	```
+- To bump the major version (e.g., `2025.12.1` → `2026.1.1`):
+	```bash
+	bumpver update --major
+	```
+- To preview the version change without making changes, use the `--dry` flag:
+	```bash
+	bumpver update --dry --patch
+	```
+
+By default, bumpver will update the version, commit, tag, and push the changes as configured in `pyproject.toml`.
 
