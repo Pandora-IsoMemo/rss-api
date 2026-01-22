@@ -1,0 +1,23 @@
+FROM python:3.10-slim
+
+WORKDIR /api
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir pipenv
+
+COPY Pipfile Pipfile.lock* /api/
+
+ENV PIPENV_VENV_IN_PROJECT=0 \
+    PIPENV_IGNORE_VIRTUALENVS=1
+
+RUN pipenv install --deploy --dev
+
+COPY . /api
+
+EXPOSE 8000
+
+CMD ["pipenv", "run", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
