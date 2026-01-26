@@ -18,6 +18,6 @@ RUN pipenv install --deploy --dev
 
 COPY . /api
 
-EXPOSE 8000
+EXPOSE 18000
 
-CMD ["pipenv", "run", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8001"]
+CMD ["pipenv", "run", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "18000"]
