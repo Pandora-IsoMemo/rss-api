@@ -18,7 +18,8 @@ pipeline {
                 docker build -t tmp-$CUR_PROJ-$TMP_SUFFIX .
                 docker run --rm --network host \
                  --env-file $CREDENTIALS \
-                 tmp-$CUR_PROJ-$TMP_SUFFIX
+                 tmp-$CUR_PROJ-$TMP_SUFFIX \
+                 python -c "import api.main; print('import ok')"
                 docker rmi tmp-$CUR_PROJ-$TMP_SUFFIX
                 '''
             }
