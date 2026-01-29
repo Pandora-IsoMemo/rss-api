@@ -9,7 +9,7 @@ pipeline {
         GH_TOKEN = credentials("github-isomemo")
         REGISTRY = 'ghcr.io'
         REGISTRY_OWNER = 'Pandora-IsoMemo'
-        IMAGE_NAME = "${REGISTRY}/${REGISTRY_OWNER}/${CUR_PROJ}"
+        IMAGE_NAME = "${REGISTRY}/${REGISTRY_OWNER}/${CUR_PROJ}".toLowerCase()
     }
     stages {
         stage('Testing') {
