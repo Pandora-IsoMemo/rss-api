@@ -7,7 +7,10 @@ from pymongo import MongoClient
 
 load_dotenv()
 
-app = FastAPI()
+app = FastAPI(
+    title="MPI RSS API",
+    root_path="/rssapi" 
+)
 
 client = None
 db = None
