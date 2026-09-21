@@ -9,7 +9,7 @@ pytest = "==9.0.2"
 pymongo = "==4.15.5"
 pandas = "==2.3.3"
 uvicorn = "==0.40.0"
-python-dotenv = "==1.2.1"
+python-dotenv = "==1.2.2"
 
 [dev-packages]
 bumpver = "==2025.1131"
