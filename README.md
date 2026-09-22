@@ -37,19 +37,20 @@ This project uses [bumpver](https://github.com/mbarkhau/bumpver) for version man
 
 - To bump the patch version (e.g., `2025.11.0` → `2025.11.1`):
 	```bash
+	pipenv run uvicorn api.main:app --reload
 	bumpver update --patch
 	```
 - To bump the minor version (e.g., `2025.11.1` → `2025.12.1`):
 	```bash
-	bumpver update --minor
+	pipenv run bumpver update --minor
 	```
 - To bump the major version (e.g., `2025.12.1` → `2026.1.1`):
 	```bash
-	bumpver update --major
+	pipenv run bumpver update --major
 	```
 - To preview the version change without making changes, use the `--dry` flag:
 	```bash
-	bumpver update --dry --patch
+	pipenv run bumpver update --dry --patch
 	```
 
 By default, bumpver will update the version, commit, tag, and push the changes as configured in `pyproject.toml`.

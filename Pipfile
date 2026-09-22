@@ -15,4 +15,4 @@ python-dotenv = "==1.2.2"
 bumpver = "==2025.1131"
 
 [requires]
-python_version = "3.10"
+python_version = "3.12"
