@@ -12,7 +12,7 @@ uvicorn = "==0.53.0"
 python-dotenv = "==1.2.2"
 
 [dev-packages]
-bumpver = "==2025.1131"
+bumpver = "==2026.1132"
 
 [requires]
 python_version = "3.12"
